@@ -1,0 +1,836 @@
+/* =====================================================
+   🎨 CONFIGURAÇÕES GERAIS (variáveis do tema)
+   ===================================================== */
+:root {
+  /* Textura base usada no fundo */
+  --bg-url: url("https://lh3.googleusercontent.com/pw/AP1GczPt_JNvlJ_mIKN8VZgLiicZ-EjSpipAvUYAzOfnJAyHrMdfOLlQMeTI706dVobcjGj4vdgJO2gldL_JXnfVTjvf7HQwsiTl3-tLXfjNilIlzrSWEoF4lkfmh6u0MWfhd_H6iNV9ftbRSPR-snyjlHAaqw=w1336-h1293-s-no-gm?authuser=0");
+
+  /* Tamanho original da textura */
+  --img-w: 1336px;
+  --img-h: 1293px;
+
+  /* Escala do fundo da tela e do painel */
+  --tile-scale-body: 0.200;   /* fundo geral */
+  --tile-scale-panel: 0.300;  /* fundo do painel central */
+
+  /* Cores principais */
+  --gold: #ffd700;
+  --gold-border: #d4af37;
+  --orange: #d46a2e;
+
+  /* Cores dos itens da lista */
+  --row-default: rgba(0, 0, 0, 0.22);     /* cor normal */
+  --row-selected: rgba(38, 52, 95, 0.32); /* cor azulada ao selecionar */
+
+  /* Caminho padrão das cantoneiras decorativas */
+  --corner-image: url("../images/cantoneira.png");
+  /* Unidade de viewport dinâmica corrigida via JS para iOS (100 * var(--vh) = altura real) */
+  --vh: 1vh;
+}
+
+/* =====================================================
+   🌆 FUNDO DO SITE
+   ===================================================== */
+html, body {
+  height: 100%;
+  min-height: 100dvh; /* ocupa toda a altura inclusive em navegadores móveis modernos */
+  margin: 0;
+}
+body {
+  /* Cor base escura para evitar fundo branco caso a imagem não carregue */
+  /* background-color: #111; */
+  /* Imagem de textura repetida */
+  background-image: var(--bg-url);
+  background-repeat: repeat;
+  background-size: calc(var(--img-w) * var(--tile-scale-body))
+                   calc(var(--img-h) * var(--tile-scale-body));
+  image-rendering: pixelated;
+  color: var(--gold);
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex; /* permite centralizar verticalmente no desktop e ajustar no mobile */
+  align-items: center;
+  justify-content: center;
+  padding-top: env(safe-area-inset-top); /* evita área branca em iPhones notch */
+  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: border-box;
+}
+
+/* =====================================================
+   🪟 PAINEL CENTRAL
+   ===================================================== */
+.panel {
+  position: relative; /* deixa o fluxo natural para permitir rolagem total em mobile */
+  width: min(92vw, 540px);
+  max-height: calc(var(--vh) * 95); /* usa altura real corrigida no mobile */
+  border: 2px solid var(--gold-border);
+  background-image: var(--bg-url);
+  background-repeat: repeat;
+  background-size: calc(var(--img-w) * var(--tile-scale-panel))
+                   calc(var(--img-h) * var(--tile-scale-panel));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column; /* permite que o conteúdo seja rolável */
+  overflow: hidden; /* esconde o overflow do painel principal */
+  margin: 16px auto; /* espaço respirável em mobile */
+}
+
+/* =====================================================
+   🧩 CANTONEIRAS DECORATIVAS
+   ===================================================== */
+.corner {
+  position: absolute;
+  width: 50px; 
+  height: 50px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none; /* evita clique nelas */
+  z-index: 5;
+}
+
+/* imagem da esquerda */
+.corner.top-left {
+  top: -2px; 
+  left: -2px;
+  background-image: var(--corner-image);
+}
+
+/* mesma imagem espelhada à direita */
+.corner.top-right {
+  top: -2px; 
+  right: -2px;
+  background-image: var(--corner-image);
+  transform: scaleX(-1);
+}
+
+/* =====================================================
+   📜 CABEÇALHO DO PAINEL
+   ===================================================== */
+.header {
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--gold-border);
+  background-image: linear-gradient(var(--orange), var(--orange)), var(--bg-url);
+  background-repeat: no-repeat, repeat;
+  background-size: cover,
+    calc(var(--img-w) * var(--tile-scale-panel))
+    calc(var(--img-h) * var(--tile-scale-panel));
+  background-blend-mode: multiply, normal;
+  position: relative;
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--gold);
+}
+
+/* Botão voltar */
+.back-button {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--gold);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-button:hover {
+  color: #fff;
+}
+
+/* =====================================================
+   📋 LISTA DE OPÇÕES
+   ===================================================== */
+.list { 
+  display: grid;
+  overflow-y: auto; /* adiciona rolagem vertical */
+  overflow-x: hidden; /* esconde rolagem horizontal */
+  max-height: calc(var(--vh) * 95 - 140px); /* altura máxima considerando header e footer */
+}
+
+/* Estilização da barra de rolagem */
+.list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 1px solid var(--gold-border);
+}
+
+.list::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.5);
+  border-radius: 5px;
+}
+
+.list::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.8);
+}
+
+/* item padrão */
+.row {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 2px solid var(--gold-border);
+  background: var(--row-default);
+  transition: background 0.2s ease;
+  outline: none;
+  cursor: pointer;
+  position: relative; /* necessário para badge absoluta */
+}
+
+/* item selecionado / hover */
+.row:hover,
+.row:focus-visible,
+.row.active {
+  background: var(--row-selected);
+}
+
+/* ícone da opção */
+.icon {
+  width: 64px; 
+  height: 64px;
+  object-fit: cover;
+  border: 2px solid var(--gold-border);
+  background: #1a1a1a;
+  display: block;
+}
+/* wrapper para ícone permitindo badge de contagem */
+.icon-wrapper { position:relative; width:64px; height:64px; }
+.icon-wrapper .icon { width:100%; height:100%; }
+
+/* texto das opções */
+.label {
+  font-size: 22px;
+  line-height: 1.1;
+  color: var(--gold);
+}
+
+/* Badge de contagem (próximo nível) */
+.count-badge {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  min-width: 22px;
+  padding: 2px 4px 1px 4px;
+  box-sizing: border-box;
+  background: linear-gradient(#2e313b,#1a1d24 60%, #121418);
+  border: 1px solid #3f434d;
+  border-bottom-color: #272a30;
+  border-right-color: #272a30;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 14px;
+  border-radius: 3px;
+  pointer-events: none;
+  text-shadow: 0 1px 2px #000, 0 0 3px rgba(255,255,255,0.35);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.07);
+}
+
+a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+/* =====================================================
+   🔘 RODAPÉ (botão de ação)
+   ===================================================== */
+.footer {
+  padding: 10px 12px;
+  border-top: 0.1px solid var(--gold-border);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+/* botão "LOGIN" */
+.login-btn {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid var(--gold-border);
+  background: rgba(96, 96, 160, 0.6);
+  color: var(--gold);
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* botão ao passar o mouse */
+.login-btn:hover {
+  background: rgba(150, 200, 255, 0.35);
+}
+
+/* =====================================================
+   📝 DETALHES DO ITEM
+   ===================================================== */
+.item-details {
+  padding: 20px;
+  color: var(--gold);
+  overflow-y: auto; /* adiciona rolagem vertical */
+  overflow-x: hidden; /* esconde rolagem horizontal */
+  max-height: calc(var(--vh) * 95 - 140px); /* altura máxima considerando header e footer */
+}
+
+/* Estilização da barra de rolagem para item-details */
+.item-details::-webkit-scrollbar {
+  width: 10px;
+}
+
+.item-details::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 1px solid var(--gold-border);
+}
+
+.item-details::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.5);
+  border-radius: 5px;
+}
+
+.item-details::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.8);
+}
+
+.item-details-image {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.item-details-image img {
+  max-width: 200px;
+  max-height: 200px;
+  border: 2px solid var(--gold-border);
+  background: #1a1a1a;
+}
+
+.item-details-info {
+  background: var(--row-default);
+  padding: 16px;
+  border: 2px solid var(--gold-border);
+}
+
+.item-details-info h2 {
+  margin-top: 0;
+  color: var(--gold);
+}
+
+.item-details-info p {
+  margin: 10px 0;
+  color: var(--gold);
+}
+
+/* =============================
+   💱 ÍCONES DE PREÇO / LINHAS
+   ============================= */
+.price-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+  font-size: 14px;
+}
+.price-label { font-weight: 700; }
+.price-value { font-weight: 600; }
+.price-icon {
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+  border: 1px solid var(--gold-border);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+/* Moeda do jogo (dourada) */
+.price-icon.game-coin {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' rx='8' fill='%230a0a0a'/><circle cx='32' cy='32' r='20' fill='%23ffd700' stroke='%23d4af37' stroke-width='4'/></svg>");
+}
+/* Real (verde com cifra R$) */
+.price-icon.brl-coin {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' rx='8' fill='%230a0a0a'/><rect x='12' y='12' width='40' height='40' rx='8' fill='%2307a359' stroke='%23057a44' stroke-width='4'/><text x='32' y='38' font-size='18' text-anchor='middle' fill='%23fff' font-family='Arial' font-weight='700'>R$</text></svg>");
+}
+
+/* =============================
+   📲 BOTÃO WHATSAPP COMPRA
+   ============================= */
+.purchase-actions { margin-top: 12px; }
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #1e1e1e;
+  border: 2px solid var(--gold-border);
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-whatsapp:hover { background:#2a2a2a; }
+.btn-whatsapp:active { transform: translateY(1px); }
+.wa-icon {
+  width:20px;
+  height:20px;
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%2300a884' stroke='%2300664d' stroke-width='8'/><path d='M33 25h34c4 0 7 3 7 7v36c0 4-3 7-7 7H45l-12 12V32c0-4 3-7 7-7z' fill='%23fff' opacity='0.25'/><path d='M50 27c-13 0-23 10-23 23 0 4 1 8 3 11l-4 14 14-4c3 2 7 3 10 3 13 0 23-10 23-24 0-12-10-23-23-23zm13 32c-1 2-6 3-8 2-2-1-5-2-7-4-2-1-4-5-5-6-1-2-1-3 0-4 0-1 0-2 1-2l2-2c1-1 1-1 2 0l2 4c1 1 1 1 0 2l-1 1c0 1 1 2 2 3 2 2 3 2 4 2l1-1c1-1 2-1 3 0 1 0 4 2 4 3 0 1 0 2 0 2z' fill='%23fff'/></svg>");
+}
+
+/* =====================================================
+   🔐 PAINEL ADMINISTRATIVO
+   ===================================================== */
+.admin-login {
+  padding: 30px;
+  text-align: center;
+}
+
+.admin-login h2 {
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.admin-login input {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid var(--gold-border);
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--gold);
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.admin-login button {
+  padding: 10px 30px;
+  border: 1px solid var(--gold-border);
+  background: rgba(96, 96, 160, 0.6);
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-login button:hover {
+  background: rgba(150, 200, 255, 0.35);
+}
+
+.admin-panel {
+  padding: 20px;
+  color: var(--gold);
+  overflow-y: auto; /* adiciona rolagem vertical */
+  overflow-x: hidden; /* esconde rolagem horizontal */
+  max-height: calc(var(--vh) * 95 - 100px); /* altura máxima considerando header */
+}
+
+/* Estilização da barra de rolagem para admin-panel */
+.admin-panel::-webkit-scrollbar {
+  width: 10px;
+}
+
+.admin-panel::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 1px solid var(--gold-border);
+}
+
+.admin-panel::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.5);
+  border-radius: 5px;
+}
+
+.admin-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.8);
+}
+
+.admin-panel h2,
+.admin-panel h3 {
+  color: var(--gold);
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.admin-button {
+  padding: 8px 14px;
+  border: 1px solid var(--gold-border);
+  background: rgba(96, 96, 160, 0.6);
+  color: var(--gold);
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.admin-button:hover {
+  background: rgba(150, 200, 255, 0.35);
+}
+
+.admin-button.danger {
+  background: rgba(160, 96, 96, 0.6);
+}
+
+.admin-button.danger:hover {
+  background: rgba(255, 150, 150, 0.35);
+}
+
+.admin-button.info {
+  background: rgba(96, 160, 96, 0.6);
+}
+
+.admin-button.info:hover {
+  background: rgba(150, 255, 150, 0.35);
+}
+
+/* =====================================================
+   📚 ADMIN ACCORDIONS
+   ===================================================== */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accordion-item {
+  border: 2px solid var(--gold-border);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.accordion-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 18px;
+  font-weight: 700;
+  color: var(--gold);
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.25), rgba(0, 0, 0, 0.2));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accordion-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-item[open] summary {
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.4), rgba(0, 0, 0, 0.3));
+}
+
+.accordion-chevron {
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.accordion-item[open] .accordion-chevron {
+  transform: rotate(90deg);
+}
+
+.accordion-content {
+  padding: 16px 18px 20px;
+  border-top: 1px solid rgba(212, 175, 55, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.accordion-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.accordion-filters label {
+  font-size: 14px;
+}
+
+.accordion-filters input,
+.accordion-filters select {
+  padding: 6px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--gold);
+  border-radius: 4px;
+}
+
+.accordion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.accordion-list .admin-row {
+  border-radius: 6px;
+}
+
+.accordion-group-title {
+  margin: 4px 0 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.accordion-empty {
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.admin-list {
+  margin-top: 20px;
+  overflow-y: auto; /* adiciona rolagem vertical */
+  overflow-x: hidden; /* esconde rolagem horizontal */
+  max-height: calc(var(--vh) * 95 - 300px); /* altura máxima considerando outros elementos */
+}
+
+/* Estilização da barra de rolagem para admin-list */
+.admin-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.admin-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 1px solid var(--gold-border);
+}
+
+.admin-list::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.5);
+  border-radius: 5px;
+}
+
+.admin-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.8);
+}
+
+/* =====================================================
+   � ADMIN TABS E TOOLBAR
+   ===================================================== */
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.admin-tab {
+  padding: 8px 12px;
+  border: 1px solid var(--gold-border);
+  background: rgba(0,0,0,0.3);
+  color: var(--gold);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.admin-tab.active {
+  background: rgba(96,96,160,0.6);
+  font-weight: 700;
+}
+
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.admin-toolbar .field {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.admin-toolbar input[type="text"],
+.admin-toolbar select {
+  padding: 6px 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.4);
+  color: var(--gold);
+  border-radius: 4px;
+}
+
+.admin-row {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 2px solid var(--gold-border);
+  background: var(--row-default);
+}
+
+.admin-row .thumb { width: 64px; height: 64px; object-fit: cover; border: 2px solid var(--gold-border); background:#1a1a1a; }
+.admin-row .title { font-weight: 700; color: var(--gold); }
+.admin-row .subtitle { font-size: 12px; opacity: 0.9; }
+
+/* =====================================================
+   �🪟 MODAL / FORMULÁRIOS ADMIN
+   ===================================================== */
+.modal-overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal {
+  width: min(92vw, 720px);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: rgba(0,0,0,0.9);
+  border: 2px solid var(--gold-border);
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.form-row label {
+  width: 160px;
+  font-weight: 700;
+}
+
+.form-row input[type="text"],
+.form-row input[type="number"],
+.form-row textarea,
+.form-row select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.4);
+  color: var(--gold);
+  border-radius: 4px;
+}
+
+.modal .form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.modal .form-actions .btn {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--gold-border);
+  background: rgba(96,96,160,0.6);
+  color: var(--gold);
+  cursor: pointer;
+}
+
+.modal .form-actions .btn.cancel {
+  background: rgba(160,96,96,0.4);
+}
+
+/* =====================================================
+   🔔 TOASTS (avisos no visual do sistema)
+   ===================================================== */
+.toast-container {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  min-width: 260px;
+  max-width: 90vw;
+  padding: 10px 14px;
+  border: 2px solid var(--gold-border);
+  background: rgba(0, 0, 0, 0.8);
+  color: var(--gold);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.toast.success { background: rgba(96, 160, 96, 0.6); }
+.toast.error { background: rgba(160, 96, 96, 0.6); }
+.toast.info { background: rgba(96, 96, 160, 0.6); }
+
+.admin-item {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 2px solid var(--gold-border);
+  background: var(--row-default);
+}
+
+.admin-item img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border: 2px solid var(--gold-border);
+  background: #1a1a1a;
+}
+
+.admin-item-info {
+  color: var(--gold);
+}
+
+.admin-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* =====================================================
+   📱 RESPONSIVIDADE MOBILE
+   - Ajustes para evitar corte de elementos em telas menores
+   ===================================================== */
+@media (max-width: 768px) {
+  body { align-items: flex-start; }
+  .panel { width: 96vw; margin: 12px auto 24px; }
+  .title { font-size: 22px; }
+  .row { grid-template-columns: 52px 1fr; gap: 12px; padding: 12px; }
+  .icon { width: 52px; height: 52px; }
+  .label { font-size: 18px; }
+  .footer { padding: 8px 10px; }
+  .login-btn { font-size: 13px; padding: 6px 12px; }
+  .list, .item-details, .admin-panel, .admin-list { max-height: none; } /* usa rolagem da página */
+}
+
+@media (max-width: 480px) {
+  .title { font-size: 20px; }
+  .row { padding: 10px; }
+  .label { font-size: 16px; }
+}
+
